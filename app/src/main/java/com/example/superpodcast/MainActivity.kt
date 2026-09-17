@@ -45,6 +45,9 @@ fun SuperPodcastApp() {
     // Displays an error if something goes wrong
     var errorMessage by remember { mutableStateOf("") }
 
+    // Tracks whether the user has completed a search
+    var hasSearched by remember { mutableStateOf(false) }
+
     val coroutineScope = rememberCoroutineScope()
 
     Column(
@@ -89,6 +92,7 @@ fun SuperPodcastApp() {
 
                         isLoading = true
                         errorMessage = ""
+                        hasSearched = false
 
                         try {
 
@@ -111,6 +115,7 @@ fun SuperPodcastApp() {
                         } finally {
 
                             isLoading = false
+                            hasSearched = true
                         }
                     }
                 }
@@ -128,6 +133,14 @@ fun SuperPodcastApp() {
 
         if (errorMessage.isNotEmpty()) {
             Text(errorMessage)
+        }
+        // Shows a helpful message when a completed search has no matching podcasts
+        if (hasSearched &&
+            !isLoading &&
+            errorMessage.isEmpty() &&
+            podcasts.isEmpty()
+        ) {
+            Text("No podcasts found. Try another search.")
         }
 
         Spacer(modifier = Modifier.height(12.dp))
